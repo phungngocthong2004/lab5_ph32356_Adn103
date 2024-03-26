@@ -12,7 +12,7 @@ import java.util.List;
         import retrofit2.http.Query;
 
 public interface ApiService {
-  String DOMAIN = "http://10.24.43.79:3000/";
+  String DOMAIN = "http://10.24.40.72:3000/";
 
   @GET("/api/list")
   Call<List<DinkModel>> getSinhVien();
@@ -26,6 +26,6 @@ public interface ApiService {
   @DELETE("/api/deletedink/{id}")
   Call<DinkModel> deleteDink(@Path("id") String id);
 
-  @GET("/api/searchdink")
-  Call<List<DinkModel>> searchDink(@Query("key") String key);
+    @GET("api/searchdink")
+    Call<ApiResponse> searchDink(@Query("key") String key);
 }

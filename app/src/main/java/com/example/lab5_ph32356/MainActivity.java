@@ -74,30 +74,29 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
-        Call<List<DinkModel>> call = apiService.searchDink(key);
+        // ... other code ...
 
-        call.enqueue(new Callback<List<DinkModel>>() {
+        Call<ApiResponse> call = apiService.searchDink(key);
+        call.enqueue(new Callback<ApiResponse>() {
             @Override
-            public void onResponse(Call<List<DinkModel>> call, Response<List<DinkModel>> response) {
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful()) {
-                    List<DinkModel> searchResults = response.body();
-                    if (searchResults != null && !searchResults.isEmpty()) {
-                        drinkAdapter = new DrinkAdapter(MainActivity.this, searchResults);
-                        recyclerView.setAdapter(drinkAdapter);
-                    } else {
-                        Toast.makeText(MainActivity.this, "Không tìm thấy kết quả phù hợp", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "Có lỗi xảy ra khi tìm kiếm", Toast.LENGTH_SHORT).show();
+                    drinkList = response.body().getData();
+                    drinkAdapter = new DrinkAdapter(MainActivity.this, drinkList);
+
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.setAdapter(drinkAdapter);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<DinkModel>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Có lỗi xảy ra khi kết nối đến máy chủ", Toast.LENGTH_SHORT).show();
-                Log.e("SearchDink", "Error: " + t.getMessage());
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("Main", t.getMessage());
             }
         });
+
+
     }
 
     private void getDrinkList() {
